@@ -8,13 +8,28 @@
 #include <xc.h>
 #include "led.h"
 
-#define OUTPUT 0
+#define ON 1
 #define OFF 0
+#define STOP 1
+#define START 0
+#define OUTPUT 0
 
 void initLEDs(){
-    TRISDbits.TRISD2 = OUTPUT;    
-    TRISDbits.TRISD0 = OUTPUT;
+    TRISGbits.TRISG12 = OUTPUT;
+    TRISGbits.TRISG14 = OUTPUT;
     
-    LATDbits.LATD2 = OFF;
-    LATDbits.LATD0 = OFF;
+    LATGbits.LATG12 = ON;
+    LATGbits.LATG14 = ON;
+}
+
+
+void SwitchLEDs(int led){
+    if(led == START){
+        LATGbits.LATG12 = ON;
+        LATGbits.LATG14 = OFF;
+    }
+    else if(led == STOP){
+        LATGbits.LATG12 = OFF;
+        LATGbits.LATG14 = ON;
+    }
 }

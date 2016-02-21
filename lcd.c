@@ -87,7 +87,6 @@ void writeLCD(unsigned char word, unsigned int commandType, unsigned int delayAf
 /* Given a character, write it to the LCD. RS should be set to the appropriate value.
  */
 void printCharLCD(char c) {
-    //TODO:
     writeLCD(c, LCD_WRITE, 46); // WRITES a character to LCD
 }
 
@@ -135,13 +134,13 @@ void initLCD(void) {
     // Turn Display (D) Off
     writeLCD(0x08, LCD_COMAND, 46); // 0000/1000 = 08 / Display OFF
     
-    // TODO: Clear Display (The delay is not specified in the data sheet at this point. You really need to have the clear display delay here.
+
     clearLCD();
-    // TODO: Entry Mode Set
+
         // Set Increment Display, No Shift (i.e. cursor move)
     writeLCD(0x06, LCD_COMAND, 46); // 0000/01,I/D,S=0000/0110 = 06 / Display Cleared
     // input mode set
-    // TODO: Display On/Off Control
+
         // Turn Display (D) On, Cursor (C) Off, and Blink(B) Off
     writeLCD(0x0C, LCD_COMAND, 46); // 0000/1DCB=0000/1100 = 0C / Display ON, Cursor OFF, Blink mode OFF
 }
@@ -151,16 +150,10 @@ void initLCD(void) {
  * the cursor increments its position automatically.
  * Since a string is just a character array, try to be clever with your use of pointers.
  */
-void printStringLCD(const char* s) {
-    int i = 0;
-	for (i = 0; s[i] != '\0'; ++i) {
-		printCharLCD(s[i]);
-	}
-}
 
 void printTimeLCD(unsigned time) {
     char formattedTime[9];
-    unsigned minutes, seconds, fractions;
+    unsigned int minutes, seconds, fractions;
     
     minutes = time / 60000; 
     minutes %= 100; //Force minutes to wraparound to 2 digits
@@ -178,7 +171,14 @@ void printTimeLCD(unsigned time) {
     formattedTime[7] = (fractions % 10) + '0';
     formattedTime[8] = '\0'; //Terminate
     
-    printStringLCD(formattedTime); //Print time
+    printLineLCD(formattedTime,2); //Print time
+}
+
+void printStringLCD(const char* s) {
+    //Prints one character at a time from current position until string is terminated
+    for (;*s != '\0' ; s++){
+        printCharLCD(*s);
+    }
 }
 
 /*
@@ -192,6 +192,20 @@ void clearLCD(){
  Use the command for changing the DD RAM address to put the cursor somewhere.
  */
 void moveCursorLCD(unsigned char x, unsigned char y){
+    // Set DD RAM address
+    unsigned char DD_address = 0x80; // the base command for DD RAM address
+    DD_address += x;
+    DD_address += (y-1)*0x40;
+    writeLCD(DD_address, LCD_COMAND, 40); // 0000/01(S/C)(R/L) = 01, clears the display
+}
+
+void print2StringsLCD(const char* s1, const char* s2){
+    printLineLCD(s1,1);
+    printLineLCD(s2,2);
+}
+void printLineLCD(const char* s, int line){ // line 1 or 2
+    moveCursorLCD(0, line);
+    printStringLCD(s);
 }
 
 /*
@@ -201,48 +215,13 @@ void moveCursorLCD(unsigned char x, unsigned char y){
  */
 void testLCD(){
     initLCD();
-    //while(1){
-        /*delayUs(210);
-        delayUs(210);
-        delayUs(210);
-        delayUs(210);
-        delayUs(210);
-        delayUs(210);
-        delayUs(210);*/
-        delayUs(200);
-        LCD_D4 = 0;
-        LCD_D5 = 1;
-        LCD_D6 = 0;
-        LCD_D7 = 0;
-
-        LCD_RS = 1; // 1 for write 0 for read,  LCD_RW
-        //enable
-        delayUs(1);
-        LCD_E = 1; // This allows reading of data into LCD mem,  LCD_E
-        //delay
-        delayUs(40);
-        //disable
-        //LCD_E = 0; // Finishes writing data, LCD_E
-        delayUs(1000);
-        LCD_D4 = 0;
-        LCD_D5 = 0;
-        LCD_D6 = 1;
-        LCD_D7 = 1;
-        //enable
-        //LCD_E = 1; // This allows reading of data into LCD mem,  LCD_E
-        //delay
-        delayUs(100);
-        //disable
-        LCD_E = 0; // Finishes writing data, LCD_E
-    //}
-    //delayUs(100000000);//*/
-    //int i = 0;
+    int i = 0;
     printCharLCD('c');
-    /*for(i = 0; i < 1000; i++) delayUs(1000);
+    for(i = 0; i < 1000; i++) delayUs(1000);
     clearLCD();
     printStringLCD("Hello!");
     moveCursorLCD(1, 2);
     for(i = 0; i < 1000; i++) delayUs(1000);
     printStringLCD("Hello!");
-    for(i = 0; i < 1000; i++) delayUs(1000);*/
+    for(i = 0; i < 1000; i++) delayUs(1000);
 }

@@ -30,7 +30,7 @@ void initTimer2() {
     IFS0bits.T2IF = 0; //Flag down
 }
 
-void delayMilliseconds(unsigned delay) {
+void delayMilliseconds(unsigned int delay) {
     int i = 0;
     for (i = 0; i != delay; ++i) {
         delayUs(1000); //delay 1 ms
@@ -39,7 +39,7 @@ void delayMilliseconds(unsigned delay) {
 
 void delayUs(unsigned int delay){
     TMR2 = 0;
-    PR2 = ???;
+    PR2 = 14*delay;
     IFS0bits.T2IF = 0;
     T2CONbits.ON = 1;
     while (IFS0bits.T2IF == 0);

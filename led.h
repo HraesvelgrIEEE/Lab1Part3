@@ -8,6 +8,7 @@
 #define	LEDS_H
 
 void initLEDs();
+void SwitchLEDs(int led);
 
 #endif	/* LEDS_H */
 

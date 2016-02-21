@@ -9,7 +9,8 @@
 #define	SWITCH_H
 
 void initSwitches();
-
+void initSW1();
+void initSW2();
 
 #endif	/* SWITCH_H */
 

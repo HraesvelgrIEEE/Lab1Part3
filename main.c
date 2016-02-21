@@ -11,15 +11,17 @@
 #include "config.h"
 #include "interrupt.h"
 
-#define RUN_LED LATDbits.LATD2
-#define STOP_LED LATDbits.LATD0
-#define RUN_BUTTON PORTDbits.RD1;
-#define RESET_BUTTON PORTDbits.RD3
+//#define RUN_LED  LATGbits.LATG12
+//#define STOP_LED  LATGbits.LATG14
+#define RUN_BUTTON PORTAbits.RA7
+#define RESET_BUTTON PORTGbits.RG13
 
 #define ON 1
 #define OFF 0
 #define PRESSED 0
 #define UNPRESSED 1
+#define STOP 1
+#define START 0
 
 // ******************************************************************************************* //
 typedef enum stateTypeEnum {run, stop, debounce, waitRelease, reset} stateType;
@@ -34,35 +36,29 @@ int main(void)
     initSwitches();
     initLCD();
     initTimers();
-    
+    enableInterrupts();
     SYSTEMConfigPerformance(10000000);
     
     //Main loop
     while(1)
     {
-        //TODO: Stuff
         switch (state) {
             case stop:
-                RUN_LED = OFF;
-                STOP_LED = ON;
-                //set LCD to line 1
-                printStringLCD("Stopped");
-                //set LCD to line 2
-                printTimeLCD(timeElapsed);
+                SwitchLEDs(STOP);
+                printLineLCD("Stopped",1); // string, line#
+                printTimeLCD(timeElapsed); // converts time and prints on line 2 of LCD
                 break;
             case run:
-                RUN_LED = ON;
-                STOP_LED = OFF;
-                //Set LCD to line 1
-                printStringLCD("Running");
-                //Set LCD to line 2
-                printTimeLCD(timeElapsed);
+                SwitchLEDs(START);
+                printLineLCD("Running", 1); // string, line#
+                printTimeLCD(timeElapsed); // converts time and prints on line 2 of LCD
                 break;
             case debounce:
                 delayMilliseconds(5);
                 state = waitRelease;
                 break;
             case waitRelease:
+                delayMilliseconds(5);
                 break;
             case reset:
                 timeElapsed = 0;
@@ -74,38 +70,29 @@ int main(void)
     return 0;
 }
 
-__ISR(_CHANGE_NOTICE_VECTOR, IPL7SRS) _CNInterrupt() {
-    IFS1bits.CNDIF = 0;
-    
-    PORTDbits;
-    
-    //Reset holds priority
+__ISR(_CHANGE_NOTICE_VECTOR, IPL7SRS) _StopStartInterrupt() { // STOP/START
+    IFS1bits.CNAIF = 0;
+    IFS1bits.CNGIF = 0;
     if (RESET_BUTTON == PRESSED) {
-        state = debounce;
-        nextState = reset;
+        if (state == stop){
+            state = debounce;
+            nextState = reset;
+        }
     }
-    
-    else {
+    else if (RUN_BUTTON == PRESSED) {
         switch (state) {
             case run:
-                //check button
-                if (RUN_BUTTON == PRESSED) {
-                    state = debounce;
-                    nextState = stop;
-                }
+                nextState = stop;
                 break;
             case stop:
-                //check button
-                if (RUN_BUTTON == PRESSED) {
-                    state = debounce;
-                    nextState = run;
-                }
+                nextState = run;
                 break;
-            case waitRelease:
-                if (RUN_BUTTON == UNPRESSED && RESET_BUTTON == UNPRESSED) {
-                    state = nextState;
-                }
-                break;
+        }
+        state = debounce;
+    }
+    else {
+        if (state = waitRelease) {
+            state = nextState;
         }
     }
 }
