@@ -151,7 +151,7 @@ void initLCD(void) {
  * Since a string is just a character array, try to be clever with your use of pointers.
  */
 
-void printTimeLCD(unsigned time) {
+char* printTimeLCD(unsigned time) {
     char formattedTime[9];
     unsigned int minutes, seconds, fractions;
     
@@ -172,6 +172,8 @@ void printTimeLCD(unsigned time) {
     formattedTime[8] = '\0'; //Terminate
     
     printLineLCD(formattedTime,2); //Print time
+    
+    return formattedTime;
 }
 
 void printStringLCD(const char* s) {
@@ -206,22 +208,4 @@ void print2StringsLCD(const char* s1, const char* s2){
 void printLineLCD(const char* s, int line){ // line 1 or 2
     moveCursorLCD(0, line);
     printStringLCD(s);
-}
-
-/*
- * This function is called in lab1p2.c for testing purposes.
- * If everything is working properly, you should get this to look like the video on D2L
- * However, it is suggested that you test more than just this one function.
- */
-void testLCD(){
-    initLCD();
-    int i = 0;
-    printCharLCD('c');
-    for(i = 0; i < 1000; i++) delayUs(1000);
-    clearLCD();
-    printStringLCD("Hello!");
-    moveCursorLCD(1, 2);
-    for(i = 0; i < 1000; i++) delayUs(1000);
-    printStringLCD("Hello!");
-    for(i = 0; i < 1000; i++) delayUs(1000);
 }
