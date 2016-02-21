@@ -15,6 +15,8 @@
 #define HIGH 1
 #define LOW 0
 
+#define LCD_WRITE 1
+
 void initTestLEDs() {
     TRISDbits.TRISD0 = OUTPUT;
     TRISDbits.TRISD1 = OUTPUT;
@@ -42,45 +44,43 @@ void testDelayUs() {
     //This should tick each second
 }
 
-void testLCD(){
-    initLCD();
-    int i = 0;
-    printCharLCD('c');
-    for(i = 0; i < 1000; i++) delayUs(1000);
-    clearLCD();
-    printStringLCD("Hello!");
-    moveCursorLCD(1, 2);
-    for(i = 0; i < 1000; i++) delayUs(1000);
-    printStringLCD("Hello!");
-    for(i = 0; i < 1000; i++) delayUs(1000);
-}
+//void printTimeLCDTest() {
+//    initTestLEDs();
+//    
+//    char correctTimeString[9];
+//    char testTimeString[9];
+//    
+//    testTimeString = printTimeLCD(75030);
+//    
+//    correctTimeString[0] = '0';
+//    correctTimeString[1] = '1';
+//    correctTimeString[2] = ':';
+//    correctTimeString[3] = '1';
+//    correctTimeString[4] = '5';
+//    correctTimeString[5] = ':';
+//    correctTimeString[6] = '0';
+//    correctTimeString[7] = '3';
+//    correctTimeString[8] = '\0'; //Terminate
+//    
+//    if (strcmp(testTimeString, correctTimeString) == 0) {
+//        //Strings equal, test passed
+//        LED1 = HIGH;
+//        LED2 = LOW; 
+//    }
+//    else {
+//        //Test failed
+//        LED1 = LOW;
+//        LED2 = HIGH;
+//    }
+//}
 
-void printTimeLCDTest() {
-    initTestLEDs();
+void writeLCDTest() {
+    initLCD();
     
-    char correctTimeString[9];
-    char testTimeString[9];
+    int i = 0;
     
-    testTimeString = printTimeLCD(75030);
-    
-    correctTimeString[0] = '0';
-    correctTimeString[1] = '1';
-    correctTimeString[2] = ':';
-    correctTimeString[3] = '1';
-    correctTimeString[4] = '5';
-    correctTimeString[5] = ':';
-    correctTimeString[6] = '0';
-    correctTimeString[7] = '3';
-    correctTimeString[8] = '\0'; //Terminate
-    
-    if (strcmp(testTimeString, correctTimeString) == 0) {
-        //Strings equal, test passed
-        LED1 = HIGH;
-        LED2 = LOW; 
-    }
-    else {
-        //Test failed
-        LED1 = LOW;
-        LED2 = HIGH;
+    //Loop 1000 times
+    for (i = 0; i != 1000; ++i) {
+        writeLCD(0b01010100, LCD_WRITE, 1000);
     }
 }

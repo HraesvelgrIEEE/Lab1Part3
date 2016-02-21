@@ -5,7 +5,9 @@
 #ifndef TESTS_H
 #define TESTS_H
 
+void initTestLEDs();
+void testDelayUs();
 void printTimeLCDTest();
-void testLCD();
+void writeLCDTest();
 
 #endif

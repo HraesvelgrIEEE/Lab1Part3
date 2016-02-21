@@ -2,6 +2,8 @@
  * Author: dhung 
  */
 
+//#define TESTING
+
 #include <xc.h>
 #include <sys/attribs.h>
 #include "timer.h"
@@ -23,6 +25,10 @@
 #define STOP 1
 #define START 0
 
+#ifdef TESTING
+#include "tests.h"
+#endif
+
 // ******************************************************************************************* //
 typedef enum stateTypeEnum {run, stop, debounce, waitRelease, reset} stateType;
 
@@ -39,6 +45,11 @@ int main(void)
     enableInterrupts();
     SYSTEMConfigPerformance(10000000);
     
+#ifdef TESTING
+    while(1) {
+        writeLCDTest();
+    }
+#else
     //Main loop
     while(1)
     {
@@ -66,6 +77,7 @@ int main(void)
                 break;
         }
     }
+#endif
     
     return 0;
 }
