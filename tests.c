@@ -44,35 +44,35 @@ void testDelayUs() {
     //This should tick each second
 }
 
-//void printTimeLCDTest() {
-//    initTestLEDs();
-//    
-//    char correctTimeString[9];
-//    char testTimeString[9];
-//    
-//    testTimeString = printTimeLCD(75030);
-//    
-//    correctTimeString[0] = '0';
-//    correctTimeString[1] = '1';
-//    correctTimeString[2] = ':';
-//    correctTimeString[3] = '1';
-//    correctTimeString[4] = '5';
-//    correctTimeString[5] = ':';
-//    correctTimeString[6] = '0';
-//    correctTimeString[7] = '3';
-//    correctTimeString[8] = '\0'; //Terminate
-//    
-//    if (strcmp(testTimeString, correctTimeString) == 0) {
-//        //Strings equal, test passed
-//        LED1 = HIGH;
-//        LED2 = LOW; 
-//    }
-//    else {
-//        //Test failed
-//        LED1 = LOW;
-//        LED2 = HIGH;
-//    }
-//}
+void printTimeLCDTest() {
+    initTestLEDs();
+    
+    char correctTimeString[9];
+    char testTimeString[9];
+    
+    getTimeString(testTimeString, 75030);
+    
+    correctTimeString[0] = '0';
+    correctTimeString[1] = '1';
+    correctTimeString[2] = ':';
+    correctTimeString[3] = '1';
+    correctTimeString[4] = '5';
+    correctTimeString[5] = ':';
+    correctTimeString[6] = '0';
+    correctTimeString[7] = '3';
+    correctTimeString[8] = '\0'; //Terminate
+    
+    if (strcmp(testTimeString, correctTimeString) == 0) {
+        //Strings equal, test passed
+        LED1 = HIGH;
+        LED2 = LOW; 
+    }
+    else {
+        //Test failed
+        LED1 = LOW;
+        LED2 = HIGH;
+    }
+}
 
 void writeLCDTest() {
     initLCD();
